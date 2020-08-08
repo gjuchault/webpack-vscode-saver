@@ -4,7 +4,7 @@ This extension triggers webpack-dev-server invalidation when a file is saved on 
 
 ## Principles
 
-**Using a filesystem watcher is bad**
+**Using a filesystem watcher is unnecessary**
 
 - It uses some watching APIs that [can be CPU-vore](https://github.com/paulmillr/chokidar#why)
 - It's irrelevant: your editor is the one responsible for file changes _most of the time_
