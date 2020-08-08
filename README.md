@@ -35,4 +35,14 @@ Rest of the time, you will have <5% CPU usage by webpack-dev-server
 
 If this happens because of your package manager, you can rebuild manually with the command `[webpack-dev-server] Trigger build`
 
+You can also use specific regex in your webpack-dev-server file:
+
+```
+watchOptions: {
+    poll: Infinity,
+    // only watch non-node-modules yarn.lock
+    ignored: /(node_modules)|(.+(?<!yarn\.lock)$)/
+}
+```
+
 Else, feel free to open an issue but this tool might not suite your usage.
