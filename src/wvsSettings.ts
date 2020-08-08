@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { FindFiles } from "./wdsServerGuesser/findFiles";
 import { WvsSettings, wvsSettingsPath, wvsMementoKey } from "./settings";
+import { getLogger } from "./helpers/logs";
 
 export async function readWvsSettings(
   findFiles: FindFiles
@@ -33,12 +34,13 @@ export async function readWvsSettings(
 export async function updateMementoWithSettings(
   context: vscode.ExtensionContext
 ) {
+  const logger = getLogger();
   const wvsConfig = await readWvsSettings(vscode.workspace.findFiles);
 
   if (wvsConfig && wvsConfig[0]) {
-    console.log("[webpack-vscode-saver] loading config", { wvsConfig });
+    logger.appendLine("Loading config");
     await context.workspaceState.update(wvsMementoKey, wvsConfig);
   } else {
-    console.log("[webpack-vscode-saver] no workspace config found");
+    logger.appendLine("No workspace config found");
   }
 }

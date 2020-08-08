@@ -4,38 +4,39 @@ import { updateMementoWithSettings } from "../wvsSettings";
 import { wvsMementoKey, WvsSettings } from "../settings";
 import { invalidate } from "../invalidate";
 import { createMatcher } from "../helpers/match";
+import { getLogger } from "../helpers/logs";
 
 export async function onFileSave(
   context: vscode.ExtensionContext,
   e: vscode.TextDocument
 ) {
+  const logger = getLogger();
+
   if (!vscode.workspace.workspaceFolders) {
-    console.log(`[webpack-vscode-saver] no workspace, skipping`);
+    logger.appendLine("No workspace, skipping");
     return;
   }
 
   const rootPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
 
   if (isSavingSettingsFile(e)) {
-    console.log("[webpack-vscode-saver] detected settings file save");
+    logger.appendLine("Detected wvs.json settings file being saved");
     updateMementoWithSettings(context);
   }
 
   const settings = context.workspaceState.get<WvsSettings>(wvsMementoKey);
 
   if (!settings || !settings[0]) {
-    console.log(`[webpack-vscode-saver] no configuration, skipping`);
+    logger.appendLine("No configuration, skipping");
     return;
   }
 
   const filePath = relative(rootPath, e.uri.fsPath);
   const serversToInvalidate = new Set<string>();
 
-  console.log(`[webpack-vscode-saver] ${filePath}`);
+  logger.appendLine(`File saved: ${filePath}`);
 
   for (const setting of settings) {
-    console.log(`[webpack-vscode-saver] checking`, { setting });
-
     const includeMatcher = createMatcher(
       setting.include.map((includePath) =>
         includePath.replace("<rootPath>", "")
@@ -53,9 +54,8 @@ export async function onFileSave(
     }
   }
 
-  console.log(
-    "[webpack-vscode-saver] invalidating build",
-    Array.from(serversToInvalidate)
+  logger.appendLine(
+    `Invalidating build for ${Array.from(serversToInvalidate).join(", ")}`
   );
 
   await Promise.all(

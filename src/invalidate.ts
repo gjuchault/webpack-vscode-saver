@@ -1,18 +1,18 @@
 import fetch from "node-fetch";
-import { debounce } from "./helpers/debounce";
 import { URL } from "url";
+import { debounce } from "./helpers/debounce";
+import { getLogger } from "./helpers/logs";
 
 export const invalidate = debounce(async (wdsServer: string) => {
+  const logger = getLogger();
+
   const { href } = new URL("/webpack-dev-server/invalidate", wdsServer);
 
-  console.log(`[webpack-vscode-saver] invalidating ${href}`);
+  logger.appendLine(`Invalidating ${href}`);
   try {
     const res = await fetch(href);
-    console.log(`[webpack-vscode-saver] ${res.ok}`);
+    logger.appendLine(`Invalidating: ${res.ok}`);
   } catch (err) {
-    console.log(`[webpack-vscode-saver] could not invalidate`, {
-      wdsServer,
-      err,
-    });
+    logger.appendLine(`Could not invalidate ${wdsServer}: ${err.toString()}`);
   }
 }, 200);

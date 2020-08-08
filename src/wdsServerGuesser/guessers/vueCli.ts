@@ -2,6 +2,7 @@
 
 import { FindFiles } from "../findFiles";
 import { WdsServerGuesserResult } from "../result";
+import { getLogger } from "../../helpers/logs";
 
 interface VueConfiguration {
   devServer?: {
@@ -14,6 +15,8 @@ const defaultVueWdsPort = 8080;
 export async function guessWdsServer(
   findFiles: FindFiles
 ): Promise<WdsServerGuesserResult> {
+  const logger = getLogger();
+
   const files = await findFiles("**/vue.config.js", "**​/node_modules/**", 1);
 
   if (!files.length) {
@@ -25,16 +28,12 @@ export async function guessWdsServer(
   let port = defaultVueWdsPort;
 
   try {
-    const vueConfig: VueConfiguration = require(files[0].path);
+    const vueConfig: VueConfiguration = require(files[0].fsPath);
 
     port = vueConfig.devServer?.port ?? port;
   } catch (err) {
-    console.error(
-      `[webpack-vscode-saver] error while reading webpack config.js`,
-      {
-        path: files[0].path,
-        err,
-      }
+    logger.appendLine(
+      `Error while reading ${files[0].path}: ${err.toString()}`
     );
 
     return {

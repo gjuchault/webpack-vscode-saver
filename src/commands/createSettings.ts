@@ -1,14 +1,17 @@
 import { join } from "path";
 import * as vscode from "vscode";
 import { wvsSettingsPath, defaultSettingsAsString } from "../settings";
+import { getLogger } from "../helpers/logs";
 
 export async function createSettings() {
-  console.log("[webpack-vscode-saver] creating a settings file");
+  const logger = getLogger();
+
+  logger.appendLine("Creating a settings file");
 
   const wsedit = new vscode.WorkspaceEdit();
 
   if (!vscode.workspace.workspaceFolders) {
-    console.log("[webpack-vscode-saver] you must be in a workspace");
+    logger.appendLine("You must be in a workspace");
     vscode.window.showErrorMessage("You must be in a workspace");
     return;
   }

@@ -3,6 +3,7 @@
 import { promises as fs } from "fs";
 import { FindFiles } from "../findFiles";
 import { WdsServerGuesserResult } from "../result";
+import { getLogger } from "../../helpers/logs";
 
 const defaultCraWdsPort = 3000;
 const dotEnvRegex = /^PORT=(\d+)$/g;
@@ -10,6 +11,8 @@ const dotEnvRegex = /^PORT=(\d+)$/g;
 export async function guessWdsServer(
   findFiles: FindFiles
 ): Promise<WdsServerGuesserResult> {
+  const logger = getLogger();
+
   const dotEnv = await findFiles("**/.env", "**​/node_modules/**", 1);
   const dotEnvLocal = await findFiles(
     "**/.env.local",
@@ -38,7 +41,9 @@ export async function guessWdsServer(
 
   try {
     const contents = await Promise.all(
-      dotEnvPaths.filter(Boolean).map(({ path }) => fs.readFile(path, "utf-8"))
+      dotEnvPaths
+        .filter(Boolean)
+        .map(({ fsPath }) => fs.readFile(fsPath, "utf-8"))
     );
 
     for (const dotEnvContent of contents) {
@@ -51,9 +56,7 @@ export async function guessWdsServer(
       port = Number(match[1]) ?? port;
     }
   } catch (err) {
-    console.error(`[webpack-vscode-saver] error while reading .env`, {
-      err,
-    });
+    logger.appendLine(`Error while reading .env: ${err.toString()}`);
 
     return {
       outcome: "notMatched",

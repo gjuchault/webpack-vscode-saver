@@ -1,16 +1,19 @@
 import * as vscode from "vscode";
-import { readWvsSettings } from "../wvsSettings";
 import { invalidate } from "../invalidate";
+import { getLogger } from "../helpers/logs";
+import { WvsSettings, wvsMementoKey } from "../settings";
 
-export async function manuallyBuild() {
-  console.log("[webpack-vscode-saver] manually invalidating build");
+export async function manuallyBuild(context: vscode.ExtensionContext) {
+  const logger = getLogger();
 
-  const wvsConfig = await readWvsSettings(vscode.workspace.findFiles);
+  logger.appendLine("Manually invalidating build");
 
-  if (!wvsConfig) {
-    console.log(`[webpack-vscode-saver] no configuration, skipping...`);
+  const settings = context.workspaceState.get<WvsSettings>(wvsMementoKey);
+
+  if (!settings) {
+    logger.appendLine("No settings, skipping");
     return;
   }
 
-  await Promise.all(wvsConfig.map(({ wdsServer }) => invalidate(wdsServer)));
+  await Promise.all(settings.map(({ wdsServer }) => invalidate(wdsServer)));
 }

@@ -4,9 +4,11 @@ import { createSettings } from "./commands/createSettings";
 import { manuallyBuild } from "./commands/manuallyBuild";
 import { updateMementoWithSettings } from "./wvsSettings";
 import { onFileSave } from "./handlers/onFileSave";
+import { getLogger } from "./helpers/logs";
 
 export async function activate(context: vscode.ExtensionContext) {
-  console.log("[webpack-vscode-saver] start");
+  const logger = getLogger();
+  logger.appendLine("Start");
 
   await updateMementoWithSettings(context);
 
@@ -21,7 +23,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const manuallyBuildCommand = vscode.commands.registerCommand(
     "webpack-vscode-saver.manuallyBuild",
-    async () => manuallyBuild()
+    async () => manuallyBuild(context)
   );
 
   const createSettingsCommand = vscode.commands.registerCommand(
