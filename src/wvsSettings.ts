@@ -10,8 +10,6 @@ export async function readWvsSettings(
     1
   );
 
-  console.log(files);
-
   if (!files.length) {
     return;
   }
