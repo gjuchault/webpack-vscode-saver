@@ -4,6 +4,7 @@ export type WvsSettings = {
   wdsServer: string;
 }[];
 
+export const wvsMementoKey = "webpack-vscode-saver";
 export const wvsSettingsPath = ".vscode/wvs.json";
 
 export const defaultSettings: WvsSettings = [

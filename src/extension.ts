@@ -1,68 +1,27 @@
 import * as vscode from "vscode";
-import { invalidate } from "./invalidate";
 import { connectToWds } from "./commands/connectToWds";
 import { createSettings } from "./commands/createSettings";
-import { readWvsSettings } from "./wvsSettings";
-import { WvsSettings } from "./settings";
-
-const wdsServerKey = "webpack-vscode-saver";
+import { manuallyBuild } from "./commands/manuallyBuild";
+import { updateMementoWithSettings } from "./wvsSettings";
+import { onFileSave } from "./handlers/onFileSave";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.log("[webpack-vscode-saver] start");
 
-  const wvsConfig = await readWvsSettings(vscode.workspace.findFiles);
-
-  if (wvsConfig && wvsConfig[0]) {
-    console.log("[webpack-vscode-saver] loading config", { wvsConfig });
-    await context.workspaceState.update(wdsServerKey, wvsConfig);
-  } else {
-    console.log("[webpack-vscode-saver] no workspace config found");
-  }
+  await updateMementoWithSettings(context);
 
   vscode.workspace.onDidSaveTextDocument(async (e) => {
-    if (e.uri.fsPath.endsWith(".vscode/wvs.json")) {
-      console.log("[webpack-vscode-saver] detected settings file save");
-      const wvsConfig = await readWvsSettings(vscode.workspace.findFiles);
-
-      if (wvsConfig && wvsConfig[0]) {
-        console.log("[webpack-vscode-saver] loading config", { wvsConfig });
-        await context.workspaceState.update(wdsServerKey, wvsConfig);
-      } else {
-        console.log("[webpack-vscode-saver] no workspace config found");
-      }
-    }
-
-    const currentConfig = context.workspaceState.get<WvsSettings>(wdsServerKey);
-
-    if (!currentConfig || !currentConfig[0]) {
-      console.log(`[webpack-vscode-saver] no configuration, skipping...`);
-      return;
-    }
-
-    console.log("[webpack-vscode-saver] invalidating build");
-
-    await invalidate(currentConfig[0].wdsServer);
+    await onFileSave(context, e);
   });
 
   const connectToWdsCommand = vscode.commands.registerCommand(
     "webpack-vscode-saver.connectToWds",
-    async () => connectToWds(context, wdsServerKey)
+    async () => connectToWds(context)
   );
 
   const manuallyBuildCommand = vscode.commands.registerCommand(
     "webpack-vscode-saver.manuallyBuild",
-    async () => {
-      console.log("[webpack-vscode-saver] manually invalidating build");
-
-      const wvsConfig = await readWvsSettings(vscode.workspace.findFiles);
-
-      if (!wvsConfig || !wvsConfig[0]) {
-        console.log(`[webpack-vscode-saver] no configuration, skipping...`);
-        return;
-      }
-
-      await invalidate(wvsConfig[0].wdsServer);
-    }
+    async () => manuallyBuild()
   );
 
   const createSettingsCommand = vscode.commands.registerCommand(

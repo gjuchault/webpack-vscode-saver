@@ -1,9 +1,7 @@
 import * as vscode from "vscode";
+import { wvsMementoKey } from "../settings";
 
-export async function connectToWds(
-  context: vscode.ExtensionContext,
-  wdsServerKey: string
-) {
+export async function connectToWds(context: vscode.ExtensionContext) {
   const wdsServer = await vscode.window.showInputBox({
     placeHolder: "webpack-dev-server base url",
     prompt: "Where is your webpack dev server located?",
@@ -14,7 +12,7 @@ export async function connectToWds(
     return;
   }
 
-  await context.workspaceState.update(wdsServerKey, wdsServer);
+  await context.workspaceState.update(wvsMementoKey, wdsServer);
 
   console.log(`[webpack-vscode-saver] setup with ${wdsServer}`);
 }
