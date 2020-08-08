@@ -7,10 +7,10 @@ export async function manuallyBuild() {
 
   const wvsConfig = await readWvsSettings(vscode.workspace.findFiles);
 
-  if (!wvsConfig || !wvsConfig[0]) {
+  if (!wvsConfig) {
     console.log(`[webpack-vscode-saver] no configuration, skipping...`);
     return;
   }
 
-  await invalidate(wvsConfig[0].wdsServer);
+  await Promise.all(wvsConfig.map(({ wdsServer }) => invalidate(wdsServer)));
 }

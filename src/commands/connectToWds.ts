@@ -12,7 +12,13 @@ export async function connectToWds(context: vscode.ExtensionContext) {
     return;
   }
 
-  await context.workspaceState.update(wvsMementoKey, wdsServer);
+  await context.workspaceState.update(wvsMementoKey, [
+    {
+      include: ["."],
+      exclude: [],
+      wdsServer,
+    },
+  ]);
 
   console.log(`[webpack-vscode-saver] setup with ${wdsServer}`);
 }
