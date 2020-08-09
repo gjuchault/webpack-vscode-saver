@@ -17,7 +17,7 @@ Even if there are some automatic wds server configuration discovery, this tool s
 ## Usage
 
 1. Install the extension
-2. Create a settings file (`[webpack-dev-server] Create settings file for this workspace`). It will try to guess the webpack-dev-server endpoint from your configuration (create-react-app, vue-cli, webpack.config.js)
+2. Create a settings file (`Create webpack vscode saver settings file for this workspace`). It will try to guess the webpack-dev-server endpoint from your configuration (create-react-app, vue-cli, webpack.config.js)
 3. Disable file watching on `webpack-dev-server` by using the following configuration:
 
 ```
@@ -33,7 +33,7 @@ Rest of the time, you will have <5% CPU usage by webpack-dev-server
 
 ## What if I change the folder content outside VS Code
 
-If this happens because of your package manager, you can rebuild manually with the command `[webpack-dev-server] Trigger build`
+If this happens because of your package manager, you can rebuild manually with the command `Trigger webpack-dev-server build`
 
 You can also use specific regex in your webpack-dev-server file:
 
@@ -49,7 +49,7 @@ Else, feel free to open an issue but this tool might not suite your usage.
 
 ## Configuring webpack-vscode-server
 
-First, run the command `[webpack-dev-server] Create settings file for this workspace`
+First, run the command `Create webpack vscode saver settings file for this workspace`
 
 You will get a file with the following type definition:
 
@@ -96,6 +96,21 @@ Example for a mono-repo workspace:
         "include": ["packages/package-3"],
         "exclude": [],
         "wdsServer": "http://localhost:8083/"
+    }
+]
+```
+
+## Connecting to a webpack-dev-server manually
+
+If you want to connect to a webpack-dev-server manually, you can use the command `Connect to webpack-dev-server`. You will be asked for the server address.
+This has the same effect than setting this configuration:
+
+```
+[
+    {
+        "include": ["*"],
+        "exclude": [],
+        "wdsServer": "http://yourwdsserver/"
     }
 ]
 ```

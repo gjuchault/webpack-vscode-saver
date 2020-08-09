@@ -17,7 +17,7 @@ export async function connectToWds(context: vscode.ExtensionContext) {
 
   await context.workspaceState.update(wvsMementoKey, [
     {
-      include: ["."],
+      include: ["*"],
       exclude: [],
       wdsServer,
     },

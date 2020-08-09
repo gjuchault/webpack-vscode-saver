@@ -26,15 +26,15 @@
     "commands": [
       {
         "command": "webpack-vscode-saver.connectToWds",
-        "title": "[webpack-dev-server] Connect to webpack-dev-server"
+        "title": "Connect to webpack-dev-server"
       },
       {
         "command": "webpack-vscode-saver.manuallyBuild",
-        "title": "[webpack-dev-server] Trigger build"
+        "title": "Trigger webpack-dev-server build"
       },
       {
         "command": "webpack-vscode-saver.createSettings",
-        "title": "[webpack-dev-server] Create settings file for this workspace"
+        "title": "Create webpack vscode saver settings file for this workspace"
       }
     ]
   },
