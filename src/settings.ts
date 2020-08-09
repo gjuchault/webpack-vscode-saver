@@ -9,7 +9,7 @@ export const wvsSettingsPath = ".vscode/wvs.json";
 
 export const defaultSettings: WvsSettings = [
   {
-    include: ["<rootPath>/**/*"],
+    include: ["*"],
     exclude: [],
     wdsServer: "http://localhost:8080/",
   },

@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { connectToWds } from "./commands/connectToWds";
 import { createSettings } from "./commands/createSettings";
 import { manuallyBuild } from "./commands/manuallyBuild";
-import { updateMementoWithSettings } from "./wvsSettings";
+import { updateMementoWithSettings } from "./readWvsSettings";
 import { onFileSave } from "./handlers/onFileSave";
 import { getLogger } from "./helpers/logs";
 

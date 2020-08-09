@@ -46,3 +46,56 @@ watchOptions: {
 ```
 
 Else, feel free to open an issue but this tool might not suite your usage.
+
+## Configuring webpack-vscode-server
+
+First, run the command `[webpack-dev-server] Create settings file for this workspace`
+
+You will get a file with the following type definition:
+
+```ts
+type WvsSettings = {
+  include: string[];
+  exclude: string[];
+  wdsServer: string;
+}[];
+```
+
+`include` and `exclude` are patterns following the [gitignore pattern](https://git-scm.com/docs/gitignore#_pattern_format).
+This format is the same used by eslint, prettier, etc.
+
+### Example for a single package repository:
+
+```
+[
+    {
+        "include": ["*"],
+        "exclude": ["node_modules"],
+        "wdsServer": "http://localhost:8080/"
+    }
+]
+```
+
+While you can exclude `node_modules`, it is totally useless: as there is no file-watching mechanism, you don't have to limit the number of files matching the include.
+
+Example for a mono-repo workspace:
+
+```
+[
+    {
+        "include": ["packages/package-1"],
+        "exclude": [],
+        "wdsServer": "http://localhost:8081/"
+    },
+    {
+        "include": ["packages/package-2"],
+        "exclude": [],
+        "wdsServer": "http://localhost:8082/"
+    },
+    {
+        "include": ["packages/package-3"],
+        "exclude": [],
+        "wdsServer": "http://localhost:8083/"
+    }
+]
+```

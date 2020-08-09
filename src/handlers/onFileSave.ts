@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { relative } from "path";
-import { updateMementoWithSettings } from "../wvsSettings";
+import { updateMementoWithSettings } from "../readWvsSettings";
 import { wvsMementoKey, WvsSettings } from "../settings";
 import { invalidate } from "../invalidate";
 import { createMatcher } from "../helpers/match";
@@ -37,21 +37,17 @@ export async function onFileSave(
   logger.appendLine(`File saved: ${filePath}`);
 
   for (const setting of settings) {
-    const includeMatcher = createMatcher(
-      setting.include.map((includePath) =>
-        includePath.replace("<rootPath>", "")
-      )
-    );
-
-    const excludeMatcher = createMatcher(
-      setting.exclude.map((excludePath) =>
-        excludePath.replace("<rootPath>", "")
-      )
-    );
+    const includeMatcher = createMatcher(setting.include);
+    const excludeMatcher = createMatcher(setting.exclude);
 
     if (includeMatcher(filePath) && !excludeMatcher(filePath)) {
       serversToInvalidate.add(setting.wdsServer);
     }
+  }
+
+  if (serversToInvalidate.size === 0) {
+    logger.appendLine("No match - no server to invalidate");
+    return;
   }
 
   logger.appendLine(
